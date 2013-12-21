@@ -1,0 +1,61 @@
+<head>
+<script type="text/javascript" src="https://raw.github.com/DmitryBaranovskiy/raphael/master/raphael-min.js"></script>
+</head>
+<body>
+
+<script type="text/javascript">
+// Creates canvas 320 × 200 at 10, 50
+var paper = Raphael(5, 5, 750, 750);
+
+var xc = 750/2
+var yc = 750/2
+
+String.prototype.format = function() {
+    var formatted = this;
+    for (var i = 0; i < arguments.length; i++) {
+        var regexp = new RegExp('\\{'+i+'\\}', 'gi');
+        formatted = formatted.replace(regexp, arguments[i]);
+    }
+    return formatted;
+};
+
+drawWedge = function(paper, x, y, r, a1, a2, fil) {
+paper.path(("M{2} {3}A{6},{6} 0 0,0 {4},{5}L{0} {1}").format(x,y, x+r*Math.sin(a1), y+r*Math.cos(a1), x+r*Math.sin(a2), y+r*Math.cos(a2),r)).attr({fill: "black", stroke: "red", "stroke-width": "0px"})
+}
+/** 
+ * Notes about making nice Optical Encoders!
+ *
+ * - Draw from outermost inward works pretty well. Fill each radiuses circle white
+ * - Figure out scaling from SVG to realworld
+ *
+ * - Draw in rectangular box with outermost disk diameter = to drawing area
+ */
+/*paper.path("M200 200A100,100 0 0,0 300,300L300 200").attr({fill: "black"});
+paper.path("M200 200A100,100 0 0,1 400,200L200 200").attr({fill: "white"});
+paper.path("M400 200A100,100 0 0,0 300,100L300 200").attr({fill: "black"});
+paper.path("M400 200A100,100 0 0,1 300,300L300 200").attr({fill: "white"});
+
+paper.circle(300,200, 50).attr({fill: "white"});
+
+paper.path("M250 200A50,50 0 0,0 350,200L250 200").attr({fill: "black"});
+*/
+paper.circle(xc,yc,1).attr({fill:"red", "stroke":"white","stroke-width":10});
+var N = Math.pow(2,8)
+for (var i = 0; i < N/2; i += 1) {
+                    drawWedge(paper, xc,yc,xc, 2*2*i*Math.PI/N, 2*(2*i+1)*Math.PI/N, "black");
+}
+
+paper.circle(xc,yc, 300).attr({fill:"white","stroke":"white","stroke-width":10})
+
+
+for (var i = 0; i < N/2; i += 1) {
+    drawWedge(paper, xc,yc,300, (2*2*i*(Math.PI)/N)+Math.PI/(N), (2*(2*i+1)*(Math.PI/N)) + Math.PI/(N), "black");
+}
+paper.circle(xc,yc, 200).attr({fill:"white", "stroke":"white","stroke-width":10})
+drawWedge(paper,xc,yc,200,0,2*Math.PI/N, "black")
+paper.circle(xc,yc, 100).attr({fill:"white", "stroke":"white", "stroke-width":10})
+                    paper.path(("M{0} {1}L{2} {3}").format(xc+20, yc, xc-20, yc))
+                    paper.path(("M{0} {1}L{2} {3}").format(xc, yc+20, xc, yc-20))
+paper.circle(xc,yc,10)
+</script>
+</body>
